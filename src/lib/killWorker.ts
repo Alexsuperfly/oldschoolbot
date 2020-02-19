@@ -1,5 +1,6 @@
 import { expose } from 'threads';
 import Monsters from 'oldschooljs/dist/monsters';
+import { addBankToBank } from './util';
 
 import sarachnis = require('../../data/monsters/sarachnis');
 import kurask = require('../../data/monsters/kurask');
@@ -306,6 +307,21 @@ expose({
 				}
 				const loot = basKnight.kill(quantity);
 				return loot.length > 0 ? loot : 'You got nothing.';
+			}
+
+			case 'DAGANNOTH KINGS':
+			case 'DKS': {
+				if (quantity > limit) {
+					return (
+						`The quantity you gave exceeds your limit of ${limit.toLocaleString()}! ` +
+						`*You can increase your limit by up to 1 million by becoming a patron at <https://www.patreon.com/oldschoolbot>, ` +
+						`or 100,000 by nitro boosting the support server.*`
+					);
+				}
+				const primeLoot = Monsters.DagannothPrime.kill(quantity);
+				const supremeLoot = Monsters.DagannothSupreme.kill(quantity);
+				const rexLoot = Monsters.DagannothRex.kill(quantity);
+				return addBankToBank(primeLoot, addBankToBank(supremeLoot, rexLoot));
 			}
 
 			default:
